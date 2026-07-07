@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   Menu, X, Bell, MessageCircle, User, LogOut, Building2, CircleDollarSign,
-  CalendarDays, Video, Wallet
+  CalendarDays, Video, Wallet, Users, FileText
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Avatar } from '../ui/Avatar';
@@ -32,21 +32,14 @@ export const Navbar: React.FC = () => {
     ? `/profile/${user.role}/${user.id}`
     : '/login';
 
-  const navLinks = [
+  // Compact list shown inline in the desktop top bar. The full Sidebar
+  // (role-specific) already covers navigation on desktop, so this stays
+  // deliberately short.
+  const desktopLinks = [
     {
       icon: user?.role === 'entrepreneur' ? <Building2 size={18} /> : <CircleDollarSign size={18} />,
       text: 'Dashboard',
       path: dashboardRoute,
-    },
-    {
-      icon: <CalendarDays size={18} />,
-      text: 'Calendar',
-      path: user ? '/calendar' : '/login',
-    },
-    {
-      icon: <Video size={18} />,
-      text: 'Video Call',
-      path: user ? '/video-call' : '/login',
     },
     {
       icon: <MessageCircle size={18} />,
@@ -59,16 +52,42 @@ export const Navbar: React.FC = () => {
       path: user ? '/notifications' : '/login',
     },
     {
-      icon: <Wallet size={18} />,
-      text: 'Payments',
-      path: user ? '/payments' : '/login',
-    },
-    {
       icon: <User size={18} />,
       text: 'Profile',
       path: profileRoute,
     }
   ];
+
+  // Full, role-specific list for the mobile menu — this is the ONLY
+  // navigation a phone user has, since the Sidebar is hidden below `md`.
+  // Mirrors what Sidebar.tsx shows per role on desktop.
+  const entrepreneurMobileLinks = [
+    { icon: <Building2 size={18} />, text: 'Dashboard', path: dashboardRoute },
+    { icon: <Building2 size={18} />, text: 'My Startup', path: user ? `/profile/entrepreneur/${user.id}` : '/login' },
+    { icon: <CircleDollarSign size={18} />, text: 'Find Investors', path: '/investors' },
+    { icon: <CalendarDays size={18} />, text: 'Calendar', path: '/calendar' },
+    { icon: <Video size={18} />, text: 'Video Call', path: '/video-call' },
+    { icon: <MessageCircle size={18} />, text: 'Messages', path: '/messages' },
+    { icon: <Bell size={18} />, text: 'Notifications', path: '/notifications' },
+    { icon: <FileText size={18} />, text: 'Documents', path: '/documents' },
+    { icon: <Wallet size={18} />, text: 'Payments', path: '/payments' },
+    { icon: <User size={18} />, text: 'Profile', path: profileRoute },
+  ];
+
+  const investorMobileLinks = [
+    { icon: <CircleDollarSign size={18} />, text: 'Dashboard', path: dashboardRoute },
+    { icon: <CircleDollarSign size={18} />, text: 'My Portfolio', path: user ? `/profile/investor/${user.id}` : '/login' },
+    { icon: <Users size={18} />, text: 'Find Startups', path: '/entrepreneurs' },
+    { icon: <CalendarDays size={18} />, text: 'Calendar', path: '/calendar' },
+    { icon: <Video size={18} />, text: 'Video Call', path: '/video-call' },
+    { icon: <MessageCircle size={18} />, text: 'Messages', path: '/messages' },
+    { icon: <Bell size={18} />, text: 'Notifications', path: '/notifications' },
+    { icon: <FileText size={18} />, text: 'Deals', path: '/deals' },
+    { icon: <Wallet size={18} />, text: 'Payments', path: '/payments' },
+    { icon: <User size={18} />, text: 'Profile', path: profileRoute },
+  ];
+
+  const mobileLinks = user?.role === 'entrepreneur' ? entrepreneurMobileLinks : investorMobileLinks;
 
   return (
     <nav className="bg-white shadow-md">
@@ -91,7 +110,7 @@ export const Navbar: React.FC = () => {
           <div className="hidden md:flex md:items-center md:ml-6">
             {user ? (
               <div className="flex items-center space-x-4">
-                {navLinks.map((link, index) => (
+                {desktopLinks.map((link, index) => (
                   <Link
                     key={index}
                     to={link.path}
@@ -168,7 +187,7 @@ export const Navbar: React.FC = () => {
                 </div>
 
                 <div className="border-t border-gray-200 pt-2">
-                  {navLinks.map((link, index) => (
+                  {mobileLinks.map((link, index) => (
                     <Link
                       key={index}
                       to={link.path}

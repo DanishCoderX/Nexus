@@ -79,3 +79,72 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
 }
+
+/* ------------------------------------------------------------------ */
+/* NEW: Week 1 - Meeting Scheduling Calendar                           */
+/* ------------------------------------------------------------------ */
+export interface AvailabilitySlot {
+  id: string;
+  userId: string;
+  date: string;      // ISO date, e.g. "2026-07-08"
+  startTime: string; // "HH:mm"
+  endTime: string;   // "HH:mm"
+  isBooked: boolean;
+}
+
+export type MeetingStatus = 'pending' | 'accepted' | 'declined' | 'cancelled';
+
+export interface MeetingRequest {
+  id: string;
+  requesterId: string;
+  recipientId: string;
+  slotId: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  topic: string;
+  status: MeetingStatus;
+  createdAt: string;
+}
+
+/* ------------------------------------------------------------------ */
+/* NEW: Week 2 - Document Processing Chamber                           */
+/* ------------------------------------------------------------------ */
+export type DocumentStatus = 'Draft' | 'In Review' | 'Signed';
+
+export interface DealDocument {
+  id: string;
+  name: string;
+  type: string;
+  size: string;
+  uploadedAt: string;
+  ownerId: string;
+  sharedWith: string[];
+  status: DocumentStatus;
+  signatureDataUrl?: string;
+  signedBy?: string;
+  signedAt?: string;
+  fileDataUrl?: string;
+}
+
+/* ------------------------------------------------------------------ */
+/* NEW: Week 3 - Payments                                              */
+/* ------------------------------------------------------------------ */
+export type TransactionType = 'deposit' | 'withdraw' | 'transfer' | 'funding';
+export type TransactionStatus = 'pending' | 'completed' | 'failed';
+
+export interface Transaction {
+  id: string;
+  type: TransactionType;
+  amount: number;
+  senderId: string;
+  receiverId: string;
+  status: TransactionStatus;
+  note?: string;
+  createdAt: string;
+}
+
+export interface Wallet {
+  userId: string;
+  balance: number;
+}

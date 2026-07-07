@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { Button } from '../ui/Button';
 
@@ -9,6 +9,22 @@ interface SignaturePadProps {
 
 export const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onCancel }) => {
   const sigRef = useRef<SignatureCanvas>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [canvasWidth, setCanvasWidth] = useState(400);
+
+  // Match the canvas's internal drawing resolution to its actual displayed
+  // width. Without this, a fixed width stretched via CSS causes touch/mouse
+  // coordinates to misalign with the drawn strokes on narrower screens.
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setCanvasWidth(containerRef.current.clientWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
 
   const handleClear = () => sigRef.current?.clear();
 
@@ -21,11 +37,11 @@ export const SignaturePad: React.FC<SignaturePadProps> = ({ onSave, onCancel }) 
 
   return (
     <div className="space-y-3">
-      <div className="border border-gray-300 rounded-md bg-white">
+      <div ref={containerRef} className="border border-gray-300 rounded-md bg-white">
         <SignatureCanvas
           ref={sigRef}
           penColor="#1D4ED8"
-          canvasProps={{ width: 400, height: 160, className: 'w-full' }}
+          canvasProps={{ width: canvasWidth, height: 160 }}
         />
       </div>
       <div className="flex justify-end gap-2">

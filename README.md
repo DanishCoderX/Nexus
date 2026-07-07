@@ -2,7 +2,7 @@
 
 This document covers the features added on top of the base Nexus platform as part of the Advanced Frontend Internship Tasks (Weeks 1–3).
 
-**Live demo:** https://nexus-alpha-sooty.vercel.app/
+**Live demo:** https://nexus-alpha-sooty.vercel.app
 
 ## Tech Additions
 
